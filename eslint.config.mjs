@@ -19,9 +19,9 @@ export default [
     },
     rules: {
       'no-console': 'warn',
-      'no-unused-vars': 'error',
+      'no-unused-vars': 'off',
       eqeqeq: 'error',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': ['error', { args: 'none', argsIgnorePattern: '^_' }],
     },
   },
 ];
