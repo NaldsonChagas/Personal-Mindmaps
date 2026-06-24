@@ -1,67 +1,35 @@
 # Personal MindMaps
 
-A mind map web application with a NestJS backend and vanilla HTML/CSS/JS frontend.
+A web application for creating, organizing, and editing personal mind maps.
 
-## Prerequisites
+Create visual trees of thoughts, organize them in folders, and keep your ideas structured.
 
-- Node.js 24 LTS (use `.nvmrc`: `nvm use`)
-- pnpm (`npm install -g pnpm`)
-- Docker + Docker Compose
+## Capabilities
 
-## Getting Started
+- Create and edit mind maps with a tree of labeled nodes
+- Organize mind maps in folders
+- Rename, move, and delete folders and mind maps
+- Apply basic styling to mind map nodes
+- Browse all mind maps from a list view
+
+## Quick Start
 
 ```bash
-# Clone the repository
-git clone <repo-url>
-cd mindcanvas
-
-# Install dependencies
-pnpm install
-
-# Set up environment variables
 cp .env.example .env
-
-# Start all services (postgres + backend + frontend)
-docker-compose up --build
+docker compose up --build
 ```
 
-Access:
+- **Frontend**: http://localhost:4000
+- **Backend API**: http://localhost:3000
 
-- Frontend: http://localhost:4000
-- Backend API: http://localhost:3000
-- Swagger docs: http://localhost:3000/api
+## How to Use
 
-## Database Backup & Restore
+1. Open the frontend at http://localhost:4000
+2. Create folders to organize your mind maps
+3. Create a mind map and open it in the editor
+4. Add child nodes, edit labels, and rearrange the tree
+5. Save your changes
 
-The PostgreSQL data is stored in `./data/postgres/` on the host machine.
+## Technical Documentation
 
-```bash
-# Backup
-tar -czf backup-$(date +%Y%m%d-%H%M%S).tar.gz ./data/postgres
-
-# Restore (stop containers first)
-docker-compose down
-tar -xzf backup-YYYYMMDD-HHMMSS.tar.gz
-docker-compose up
-```
-
-## Commit Convention
-
-This project uses [Conventional Commits](https://www.conventionalcommits.org/).
-Commitlint is enforced via Husky on every commit.
-
-```
-feat(scope): short description
-fix(scope): short description
-chore(scope): short description
-docs(scope): short description
-```
-
-## Adding a New Resource (Backend)
-
-```bash
-cd apps/backend
-nest generate resource <resource-name>
-```
-
-Follow the existing module structure: controller → service → repository → entity → DTOs.
+Technical and architectural documentation is available in the [docs/](docs/) directory.
