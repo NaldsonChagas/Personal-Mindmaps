@@ -1,0 +1,12 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Backend dev — placeholder'",
+    "build": "echo 'Backend build — placeholder'",
+    "test": "echo 'Backend tests — placeholder'",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.{ts,js,json}\""
+  }
+}
