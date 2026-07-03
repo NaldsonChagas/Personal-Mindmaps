@@ -1,15 +1,30 @@
 #!/usr/bin/env node
-const http = require('http');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const hostname = '0.0.0.0';
-const port = process.env.PORT || 4000;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PORT = process.env.PORT || 4000;
+const API_URL = process.env.API_URL || 'http://localhost:3000';
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/html');
-  res.end('<h1>Personal MindMaps</h1><p>Frontend placeholder — Phase 0</p>');
+const app = express();
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/config.js', (_req, res) => {
+  res.type('application/javascript');
+  res.send(`window.APP_CONFIG = { API_URL: ${JSON.stringify(API_URL)} };`);
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Frontend placeholder running at http://${hostname}:${port}/`);
+app.get('/map/:id', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'map.html'));
+});
+
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  // eslint-disable-next-line no-console
+  console.log(`Frontend server running at http://localhost:${PORT}/`);
 });

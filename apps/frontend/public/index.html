@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal MindMaps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+</head>
+<body>
+  <header class="page-header">
+    <div class="page-header-inner">
+      <div class="logo">
+        <img src="/assets/logo.svg" alt="" width="28" height="28" />
+        <h1>Personal MindMaps</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="list-header">
+      <div class="list-header-left">
+        <h2 id="section-title">All mind maps</h2>
+        <button id="folder-back-btn" class="folder-back-btn hidden" aria-label="Show all mind maps">
+          <i data-lucide="arrow-left"></i> All mind maps
+        </button>
+      </div>
+      <div class="list-header-right">
+        <button id="btn-new-map" class="btn btn-primary" aria-label="Create new mind map">
+          <i data-lucide="file-text"></i> New mind map
+        </button>
+        <button id="btn-new-folder" class="btn btn-ghost" aria-label="Create new folder">
+          <i data-lucide="folder-plus"></i> New folder
+        </button>
+      </div>
+    </div>
+
+    <section id="folders-section" class="section">
+      <div class="section-header">
+        <h2>Folders</h2>
+      </div>
+      <div id="folders-grid" class="grid"></div>
+      <div id="folders-empty" class="empty-state hidden">
+        <i data-lucide="folder"></i>
+        <h3>No folders yet</h3>
+        <p>Create a folder to organize your mind maps.</p>
+      </div>
+    </section>
+
+    <section id="maps-section" class="section">
+      <div class="section-header">
+        <h2 id="maps-section-title">Mind maps</h2>
+      </div>
+      <div id="maps-grid" class="grid"></div>
+      <div id="maps-empty" class="empty-state hidden">
+        <i data-lucide="file-text"></i>
+        <h3>No mind maps yet</h3>
+        <p>Create your first mind map to get started.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="error-banner" class="error-banner hidden" role="alert"></div>
+
+  <script src="/config.js"></script>
+  <script type="module" src="/js/list-page.js"></script>
+</body>
+</html>

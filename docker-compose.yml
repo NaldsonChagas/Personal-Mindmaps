@@ -32,8 +32,8 @@ services:
 
   frontend:
     build:
-      context: ./apps/frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/frontend/Dockerfile
     restart: unless-stopped
     ports:
       - '${FRONTEND_PORT}:4000'

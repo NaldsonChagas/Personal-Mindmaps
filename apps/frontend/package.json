@@ -2,11 +2,14 @@
   "name": "frontend",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "echo 'Frontend dev — placeholder'",
+    "dev": "node server.js",
     "start": "node server.js",
-    "test": "echo 'Frontend tests — placeholder'",
     "lint": "eslint . --ext .js",
     "format": "prettier --write \"**/*.{js,json}\""
+  },
+  "dependencies": {
+    "express": "^4.21.0"
   }
 }

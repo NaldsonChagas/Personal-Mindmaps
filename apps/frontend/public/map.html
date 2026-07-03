@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mind Map Editor — Personal MindMaps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+</head>
+<body>
+  <header class="page-header">
+    <div class="page-header-inner">
+      <a href="/" class="btn btn-ghost" aria-label="Back to list page">
+        <i data-lucide="arrow-left"></i>
+        Back
+      </a>
+      <div class="logo" style="margin-left: var(--space-2);">
+        <img src="/assets/logo.svg" alt="" width="24" height="24" />
+        <h1>Personal MindMaps</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="map-content" class="empty-state" style="margin-top: var(--space-10);">
+      <i data-lucide="loader"></i>
+      <h3 id="map-title">Loading...</h3>
+      <p>The mind map editor will be implemented in the next phase.</p>
+    </div>
+  </main>
+
+  <script src="/config.js"></script>
+  <script type="module" src="/js/map-page.js"></script>
+</body>
+</html>
