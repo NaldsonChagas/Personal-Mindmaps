@@ -27,6 +27,7 @@ describe('Folders (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api');
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -45,7 +46,7 @@ describe('Folders (e2e)', () => {
 
   it('POST /folders with valid body returns 201 and the created folder', async () => {
     const res = await request(app.getHttpServer())
-      .post('/folders')
+      .post('/api/folders')
       .send({ name: 'Test Folder' })
       .expect(201);
 
@@ -58,14 +59,14 @@ describe('Folders (e2e)', () => {
 
   it('POST /folders with empty name returns 400', async () => {
     await request(app.getHttpServer())
-      .post('/folders')
+      .post('/api/folders')
       .send({ name: '' })
       .expect(400);
   });
 
   it('GET /folders returns 200 and an array', async () => {
     const res = await request(app.getHttpServer())
-      .get('/folders')
+      .get('/api/folders')
       .expect(200);
 
     expect(Array.isArray(res.body)).toBe(true);
@@ -74,7 +75,7 @@ describe('Folders (e2e)', () => {
 
   it('PATCH /folders/:id with a valid name returns 200 and updated folder', async () => {
     const res = await request(app.getHttpServer())
-      .patch(`/folders/${createdId}`)
+      .patch(`/api/folders/${createdId}`)
       .send({ name: 'Renamed Folder' })
       .expect(200);
 
@@ -83,20 +84,20 @@ describe('Folders (e2e)', () => {
 
   it('PATCH /folders/:id with non-existent id returns 404', async () => {
     await request(app.getHttpServer())
-      .patch('/folders/00000000-0000-0000-0000-000000000000')
+      .patch('/api/folders/00000000-0000-0000-0000-000000000000')
       .send({ name: 'Nope' })
       .expect(404);
   });
 
   it('DELETE /folders/:id returns 204', async () => {
     await request(app.getHttpServer())
-      .delete(`/folders/${createdId}`)
+      .delete(`/api/folders/${createdId}`)
       .expect(204);
   });
 
   it('DELETE /folders/:id with non-existent id returns 404', async () => {
     await request(app.getHttpServer())
-      .delete('/folders/00000000-0000-0000-0000-000000000000')
+      .delete('/api/folders/00000000-0000-0000-0000-000000000000')
       .expect(404);
   });
 });

@@ -19,6 +19,8 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix('api');
+
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Personal MindMaps API')
     .setDescription('REST API for managing mind maps and folders')
@@ -26,7 +28,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);

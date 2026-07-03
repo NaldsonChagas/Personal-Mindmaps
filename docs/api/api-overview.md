@@ -9,9 +9,8 @@
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/api/folders` | List all folders |
-| `GET` | `/api/folders/:id` | Get folder by ID |
 | `POST` | `/api/folders` | Create a folder |
-| `PUT` | `/api/folders/:id` | Update folder name |
+| `PATCH` | `/api/folders/:id` | Rename a folder |
 | `DELETE` | `/api/folders/:id` | Delete a folder |
 
 ## Mind Maps
@@ -19,9 +18,10 @@
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/api/mind-maps` | List all mind maps (optional `?folderId=` filter) |
-| `GET` | `/api/mind-maps/:id` | Get mind map by ID |
+| `GET` | `/api/mind-maps/:id` | Get mind map by ID (includes content) |
 | `POST` | `/api/mind-maps` | Create a mind map |
-| `PUT` | `/api/mind-maps/:id` | Update title, folder, or content |
+| `PATCH` | `/api/mind-maps/:id` | Update title or content |
+| `PATCH` | `/api/mind-maps/:id/move` | Move mind map to a folder (or remove from folder) |
 | `DELETE` | `/api/mind-maps/:id` | Delete a mind map |
 
 ## Request/Response Format
@@ -30,4 +30,4 @@ All endpoints use JSON. Mind map content follows the domain model node tree stru
 
 ## Detailed Documentation
 
-Swagger documentation is available at `http://localhost:3000/api` when the backend is running.
+Swagger documentation is available at `http://localhost:3000/api/docs` when the backend is running.

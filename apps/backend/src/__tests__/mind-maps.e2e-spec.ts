@@ -31,6 +31,7 @@ describe('MindMaps (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api');
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -47,7 +48,7 @@ describe('MindMaps (e2e)', () => {
 
   it('POST /mind-maps with valid body returns 201 and the created mind map', async () => {
     const res = await request(app.getHttpServer())
-      .post('/mind-maps')
+      .post('/api/mind-maps')
       .send({ title: 'My Map' })
       .expect(201);
 
@@ -59,7 +60,7 @@ describe('MindMaps (e2e)', () => {
 
   it('POST /mind-maps with a non-existent folderId returns 404', async () => {
     await request(app.getHttpServer())
-      .post('/mind-maps')
+      .post('/api/mind-maps')
       .send({
         title: 'Bad Map',
         folderId: '00000000-0000-0000-0000-000000000000',
@@ -69,13 +70,13 @@ describe('MindMaps (e2e)', () => {
 
   it('POST /mind-maps with a valid folderId creates map in folder', async () => {
     const folderRes = await request(app.getHttpServer())
-      .post('/folders')
+      .post('/api/folders')
       .send({ name: 'My Folder' })
       .expect(201);
     folderId = folderRes.body.id;
 
     const res = await request(app.getHttpServer())
-      .post('/mind-maps')
+      .post('/api/mind-maps')
       .send({ title: 'Folder Map', folderId })
       .expect(201);
 
@@ -84,7 +85,7 @@ describe('MindMaps (e2e)', () => {
 
   it('GET /mind-maps returns 200 and an array', async () => {
     const res = await request(app.getHttpServer())
-      .get('/mind-maps')
+      .get('/api/mind-maps')
       .expect(200);
 
     expect(Array.isArray(res.body)).toBe(true);
@@ -95,7 +96,7 @@ describe('MindMaps (e2e)', () => {
 
   it('GET /mind-maps?folderId=uuid filters by folder', async () => {
     const res = await request(app.getHttpServer())
-      .get(`/mind-maps?folderId=${folderId}`)
+      .get(`/api/mind-maps?folderId=${folderId}`)
       .expect(200);
 
     expect(Array.isArray(res.body)).toBe(true);
@@ -106,7 +107,7 @@ describe('MindMaps (e2e)', () => {
 
   it('GET /mind-maps/:id returns 200 with content field included', async () => {
     const res = await request(app.getHttpServer())
-      .get(`/mind-maps/${mindMapId}`)
+      .get(`/api/mind-maps/${mindMapId}`)
       .expect(200);
 
     expect(res.body.id).toBe(mindMapId);
@@ -117,7 +118,7 @@ describe('MindMaps (e2e)', () => {
 
   it('PATCH /mind-maps/:id updates title', async () => {
     const res = await request(app.getHttpServer())
-      .patch(`/mind-maps/${mindMapId}`)
+      .patch(`/api/mind-maps/${mindMapId}`)
       .send({ title: 'Renamed Map' })
       .expect(200);
 
@@ -126,7 +127,7 @@ describe('MindMaps (e2e)', () => {
 
   it('PATCH /mind-maps/:id updates content', async () => {
     const res = await request(app.getHttpServer())
-      .patch(`/mind-maps/${mindMapId}`)
+      .patch(`/api/mind-maps/${mindMapId}`)
       .send({
         content: {
           nodeData: {
@@ -142,7 +143,7 @@ describe('MindMaps (e2e)', () => {
 
   it('PATCH /mind-maps/:id/move moves map to a folder', async () => {
     const res = await request(app.getHttpServer())
-      .patch(`/mind-maps/${mindMapId}/move`)
+      .patch(`/api/mind-maps/${mindMapId}/move`)
       .send({ folderId })
       .expect(200);
 
@@ -151,7 +152,7 @@ describe('MindMaps (e2e)', () => {
 
   it('PATCH /mind-maps/:id/move with folderId: null removes folder association', async () => {
     const res = await request(app.getHttpServer())
-      .patch(`/mind-maps/${mindMapId}/move`)
+      .patch(`/api/mind-maps/${mindMapId}/move`)
       .send({ folderId: null })
       .expect(200);
 
@@ -160,7 +161,7 @@ describe('MindMaps (e2e)', () => {
 
   it('DELETE /mind-maps/:id returns 204', async () => {
     await request(app.getHttpServer())
-      .delete(`/mind-maps/${mindMapId}`)
+      .delete(`/api/mind-maps/${mindMapId}`)
       .expect(204);
   });
 });
