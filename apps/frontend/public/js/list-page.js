@@ -341,7 +341,7 @@ async function handleMove(map) {
 
   renderFolderOptions(currentFolderId);
 
-  const confirmed = await openModal({
+  const modalPromise = openModal({
     title: `Move "${map.title}"`,
     bodyHtml: '',
     confirmLabel: 'Move',
@@ -351,6 +351,13 @@ async function handleMove(map) {
       return selectedFolderId;
     },
   });
+
+  const modalBody = document.querySelector('.modal-body');
+  if (modalBody) {
+    modalBody.appendChild(panel);
+  }
+
+  const confirmed = await modalPromise;
 
   if (confirmed === null) return;
 
