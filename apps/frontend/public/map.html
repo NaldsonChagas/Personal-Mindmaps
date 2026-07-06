@@ -17,10 +17,10 @@
 <body>
   <header class="editor-header">
     <div class="editor-header-left">
-      <a href="/" class="btn btn-ghost btn-sm" aria-label="Back to list page">
+      <button id="back-btn" class="btn btn-ghost btn-sm" aria-label="Back to list page">
         <i data-lucide="arrow-left"></i>
         Back
-      </a>
+      </button>
       <div class="logo" style="display:flex;align-items:center;gap:var(--space-2);">
         <img src="/assets/logo.svg" alt="" width="20" height="20" />
       </div>
@@ -43,6 +43,11 @@
   <main class="editor-page">
     <section class="editor-topbar">
       <span style="font-size:12px;color:var(--color-text-muted);">Click nodes to edit. Drag to rearrange.</span>
+      <span style="flex:1"></span>
+      <button id="export-btn" class="btn btn-ghost btn-sm" aria-label="Export as PNG">
+        <i data-lucide="download"></i>
+        Export PNG
+      </button>
     </section>
 
     <section class="editor-shell">

@@ -1,6 +1,6 @@
 import * as api from './api.js';
 import { FrontendMindMapAdapter } from './mind-elixir-adapter.js';
-import { showSuccess, showError } from './notifications.js';
+import { showError } from './notifications.js';
 
 const state = {
   mapId: null,
@@ -135,16 +135,15 @@ function createMindElixirInstance(data) {
 }
 
 function setupChangeDetection(mind) {
-  let debounceTimer = null;
-
   function detectChange() {
-    clearTimeout(debounceTimer);
     if (!state.hasPendingChanges) {
       state.hasPendingChanges = true;
       updateSaveBadge('unsaved');
     }
     scheduleAutoSave();
   }
+
+  mind.bus.addListener('operation', detectChange);
 
   editorContainer.addEventListener('click', (e) => {
     if (e.target.closest('.mind-elixir')) detectChange();
@@ -180,7 +179,8 @@ async function saveMindMap({ force = false } = {}) {
   let content = null;
   if (state.mind) {
     const mindData = state.mind.getData();
-    content = mindData;
+    const appContent = FrontendMindMapAdapter.fromMindElixir(mindData);
+    content = FrontendMindMapAdapter.toMindElixir(appContent);
   }
 
   try {
@@ -210,24 +210,25 @@ async function loadMap() {
   state.isLoading = true;
   showLoading();
   titleDisplay.textContent = 'Loading...';
-  updateSaveBadge('saved', 'Loading...');
+  saveBadge.textContent = '';
   saveBtn.disabled = true;
 
   try {
     const response = await api.getMindMap(state.mapId);
+    const appContent = FrontendMindMapAdapter.fromMindElixir(response.content);
     state.map = {
       id: response.id,
       title: response.title,
       folderId: response.folderId,
-      content: FrontendMindMapAdapter.fromMindElixir(response.content),
+      content: appContent,
       createdAt: response.createdAt,
       updatedAt: response.updatedAt,
     };
 
     titleDisplay.textContent = state.map.title;
-    updateSaveBadge('saved', 'Saved');
+    updateSaveBadge('saved', '');
 
-    const mindElixirData = response.content;
+    const mindElixirData = FrontendMindMapAdapter.toMindElixir(appContent);
     state.mind = createMindElixirInstance(mindElixirData);
     setupChangeDetection(state.mind);
   } catch (err) {
@@ -242,6 +243,23 @@ async function loadMap() {
 
   state.isLoading = false;
 }
+
+const backBtn = document.getElementById('back-btn');
+backBtn.addEventListener('click', async () => {
+  if (state.hasPendingChanges) {
+    backBtn.disabled = true;
+    await saveMindMap({ force: true });
+    backBtn.disabled = false;
+  }
+  window.location.href = '/';
+});
+
+const exportBtn = document.getElementById('export-btn');
+exportBtn.addEventListener('click', () => {
+  if (state.mind && state.mind.exportPng) {
+    state.mind.exportPng();
+  }
+});
 
 saveBtn.addEventListener('click', () => {
   saveMindMap({ force: true });
