@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FolderOrmEntity } from '../infrastructure/database/entities/folder.orm-entity';
+import { MindMapOrmEntity } from '../infrastructure/database/entities/mind-map.orm-entity';
 import { FolderRepository } from '../infrastructure/database/repositories/folder.repository';
 import { FoldersController } from './folders.controller';
 import { FoldersService } from './folders.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FolderOrmEntity])],
+  imports: [TypeOrmModule.forFeature([FolderOrmEntity, MindMapOrmEntity])],
   controllers: [FoldersController],
   providers: [
     FoldersService,

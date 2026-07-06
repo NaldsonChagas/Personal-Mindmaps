@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { Folder } from '../../../domain/folder/folder.entity';
 import { IFolderRepository } from '../../../domain/ports/folder.repository.interface';
 import { FolderOrmEntity } from '../entities/folder.orm-entity';
+import { MindMapOrmEntity } from '../entities/mind-map.orm-entity';
 
 @Injectable()
 export class FolderRepository implements IFolderRepository {
   constructor(
     @InjectRepository(FolderOrmEntity)
     private readonly ormRepo: Repository<FolderOrmEntity>,
+    @InjectRepository(MindMapOrmEntity)
+    private readonly mindMapOrmRepo: Repository<MindMapOrmEntity>,
   ) {}
 
   async findAll(): Promise<Folder[]> {
@@ -21,6 +24,11 @@ export class FolderRepository implements IFolderRepository {
 
   async findById(id: string): Promise<Folder | null> {
     const entity = await this.ormRepo.findOne({ where: { id } });
+    return entity ? this.toDomain(entity) : null;
+  }
+
+  async findByName(name: string): Promise<Folder | null> {
+    const entity = await this.ormRepo.findOne({ where: { name } });
     return entity ? this.toDomain(entity) : null;
   }
 
@@ -38,6 +46,10 @@ export class FolderRepository implements IFolderRepository {
 
   async delete(id: string): Promise<void> {
     await this.ormRepo.delete(id);
+  }
+
+  async countMindMaps(folderId: string): Promise<number> {
+    return this.mindMapOrmRepo.count({ where: { folderId } });
   }
 
   private toDomain(entity: FolderOrmEntity): Folder {

@@ -6,6 +6,7 @@ import request from 'supertest';
 import { FolderOrmEntity } from '../infrastructure/database/entities/folder.orm-entity';
 import { MindMapOrmEntity } from '../infrastructure/database/entities/mind-map.orm-entity';
 import { FoldersModule } from '../folders/folders.module';
+import { MindMapsModule } from '../mind-maps/mind-maps.module';
 
 describe('Folders (e2e)', () => {
   let app: INestApplication;
@@ -23,6 +24,7 @@ describe('Folders (e2e)', () => {
           }),
         }),
         FoldersModule,
+        MindMapsModule,
       ],
     }).compile();
 
@@ -64,6 +66,13 @@ describe('Folders (e2e)', () => {
       .expect(400);
   });
 
+  it('POST /folders with duplicate name returns 409', async () => {
+    await request(app.getHttpServer())
+      .post('/api/folders')
+      .send({ name: 'Test Folder' })
+      .expect(409);
+  });
+
   it('GET /folders returns 200 and an array', async () => {
     const res = await request(app.getHttpServer())
       .get('/api/folders')
@@ -87,6 +96,38 @@ describe('Folders (e2e)', () => {
       .patch('/api/folders/00000000-0000-0000-0000-000000000000')
       .send({ name: 'Nope' })
       .expect(404);
+  });
+
+  it('PATCH /folders/:id with a name already taken by another folder returns 409', async () => {
+    const other = await request(app.getHttpServer())
+      .post('/api/folders')
+      .send({ name: 'Other Folder' })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .patch(`/api/folders/${createdId}`)
+      .send({ name: 'Other Folder' })
+      .expect(409);
+
+    await request(app.getHttpServer())
+      .delete(`/api/folders/${other.body.id}`)
+      .expect(204);
+  });
+
+  it('DELETE /folders/:id with a folder that contains mind maps returns 409', async () => {
+    const folder = await request(app.getHttpServer())
+      .post('/api/folders')
+      .send({ name: 'Folder With Maps' })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .post('/api/mind-maps')
+      .send({ title: 'Map in folder', folderId: folder.body.id })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .delete(`/api/folders/${folder.body.id}`)
+      .expect(409);
   });
 
   it('DELETE /folders/:id returns 204', async () => {

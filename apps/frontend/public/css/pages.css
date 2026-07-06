@@ -78,6 +78,26 @@
   white-space: nowrap;
 }
 
+.folder-card-wrapper {
+  position: relative;
+}
+
+.folder-card-actions {
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.folder-card-wrapper:hover .folder-card-actions,
+.folder-card-wrapper:focus-within .folder-card-actions {
+  opacity: 1;
+}
+
+.folder-card-actions .btn-icon {
+  margin-left: auto;
+}
+
 .map-card-wrapper {
   position: relative;
 }

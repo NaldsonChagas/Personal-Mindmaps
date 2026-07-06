@@ -73,14 +73,53 @@ function renderFolders() {
   empty.classList.add('hidden');
 
   for (const folder of state.folders) {
+    const wrapper = createElement('div', { class: 'folder-card-wrapper' });
+
     const card = createElement('div', { class: 'card folder-card' });
     card.innerHTML = `<i data-lucide="folder"></i><span class="folder-name">${escapeHtml(folder.name)}</span>`;
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      if (e.target.closest('.folder-card-actions')) return;
       state.currentFolderId = folder.id;
       state.currentFolderName = folder.name;
       fetchAndRender();
     });
-    grid.appendChild(card);
+
+    const actions = createElement('div', { class: 'folder-card-actions' });
+
+    const trigger = createElement('button', {
+      class: 'btn btn-icon',
+      attrs: { 'aria-label': `Actions for ${folder.name}`, 'data-dropdown-trigger': '' },
+    });
+    trigger.innerHTML = '<i data-lucide="more-vertical"></i>';
+
+    const menu = createElement('div', { class: 'dropdown-menu hidden' });
+
+    const renameItem = createElement('button', { class: 'dropdown-item', attrs: { type: 'button' } });
+    renameItem.innerHTML = '<i data-lucide="pencil"></i> Rename';
+    renameItem.addEventListener('click', () => {
+      closeDropdown(menu);
+      handleFolderRename(folder);
+    });
+    menu.appendChild(renameItem);
+
+    const deleteItem = createElement('button', { class: 'dropdown-item dropdown-item-danger', attrs: { type: 'button' } });
+    deleteItem.innerHTML = '<i data-lucide="trash-2"></i> Delete';
+    deleteItem.addEventListener('click', () => {
+      closeDropdown(menu);
+      handleFolderDelete(folder);
+    });
+    menu.appendChild(deleteItem);
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleDropdown(trigger, menu);
+    });
+
+    actions.appendChild(trigger);
+    actions.appendChild(menu);
+    card.appendChild(actions);
+    wrapper.appendChild(card);
+    grid.appendChild(wrapper);
   }
 }
 
@@ -170,6 +209,47 @@ async function handleNewFolder() {
   if (!result) return;
   try {
     await api.createFolder({ name: result });
+    await fetchAndRender();
+  } catch (err) {
+    showError(err.message);
+  }
+}
+
+async function handleFolderRename(folder) {
+  const result = await openModal({
+    title: 'Rename folder',
+    bodyHtml: `<label class="label" for="folder-rename-input">New name</label><input id="folder-rename-input" class="input" type="text" value="${escapeHtml(folder.name)}" autofocus />`,
+    confirmLabel: 'Rename',
+    onConfirm: () => {
+      const input = document.getElementById('folder-rename-input');
+      const name = input ? input.value.trim() : '';
+      if (!name) {
+        input?.focus();
+        return false;
+      }
+      return name;
+    },
+  });
+  if (!result) return;
+  try {
+    await api.renameFolder(folder.id, { name: result });
+    await fetchAndRender();
+  } catch (err) {
+    showError(err.message);
+  }
+}
+
+async function handleFolderDelete(folder) {
+  const result = await openModal({
+    title: 'Delete folder',
+    bodyHtml: `<p>Are you sure you want to delete <strong>${escapeHtml(folder.name)}</strong>? This action cannot be undone.</p><p style="margin-top: var(--space-2); font-size: var(--font-sm); color: var(--color-text-muted);">Only empty folders can be deleted.</p>`,
+    confirmLabel: 'Delete',
+    confirmClass: 'btn-danger',
+    onConfirm: () => true,
+  });
+  if (!result) return;
+  try {
+    await api.deleteFolder(folder.id);
     await fetchAndRender();
   } catch (err) {
     showError(err.message);

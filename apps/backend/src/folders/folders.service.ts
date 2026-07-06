@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Folder } from '../domain/folder/folder.entity';
 import { IFolderRepository } from '../domain/ports/folder.repository.interface';
@@ -25,6 +25,10 @@ export class FoldersService {
   }
 
   async create(dto: CreateFolderDto): Promise<Folder> {
+    const existing = await this.folderRepository.findByName(dto.name);
+    if (existing) {
+      throw new ConflictException(`Folder with name "${dto.name}" already exists`);
+    }
     const now = new Date();
     const folder = new Folder({
       id: uuidv4(),
@@ -37,12 +41,20 @@ export class FoldersService {
 
   async rename(id: string, dto: UpdateFolderDto): Promise<Folder> {
     const folder = await this.findById(id);
+    const existing = await this.folderRepository.findByName(dto.name);
+    if (existing && existing.id !== id) {
+      throw new ConflictException(`Folder with name "${dto.name}" already exists`);
+    }
     folder.rename(dto.name);
     return this.folderRepository.update(folder);
   }
 
   async delete(id: string): Promise<void> {
-    await this.findById(id);
+    const folder = await this.findById(id);
+    const count = await this.folderRepository.countMindMaps(id);
+    if (count > 0) {
+      throw new ConflictException(`Cannot delete folder "${folder.name}": it contains ${count} mind map(s). Remove or move them first.`);
+    }
     await this.folderRepository.delete(id);
   }
 }
