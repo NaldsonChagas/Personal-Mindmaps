@@ -11,6 +11,9 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+const nodeModulesPath = path.resolve(__dirname, 'node_modules');
+app.use('/node_modules', express.static(nodeModulesPath));
+
 app.get('/config.js', (_req, res) => {
   res.type('application/javascript');
   res.send(`window.APP_CONFIG = { API_URL: ${JSON.stringify(API_URL)} };`);

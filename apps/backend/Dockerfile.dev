@@ -1,0 +1,10 @@
+FROM node:24-alpine
+WORKDIR /app
+RUN npm install -g tsx
+COPY tsconfig.base.json ./
+COPY apps/backend/package*.json ./apps/backend/
+RUN cd apps/backend && npm install
+COPY apps/backend/tsconfig.json ./apps/backend/
+COPY apps/backend/src ./apps/backend/src
+EXPOSE 3000
+CMD ["tsx", "--watch", "apps/backend/src/main.ts"]

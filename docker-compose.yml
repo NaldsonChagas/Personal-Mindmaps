@@ -19,13 +19,17 @@ services:
   backend:
     build:
       context: .
-      dockerfile: apps/backend/Dockerfile
+      dockerfile: apps/backend/Dockerfile.dev
     restart: unless-stopped
     ports:
       - '${BACKEND_PORT}:3000'
     environment:
       DATABASE_URL: ${DATABASE_URL}
       PORT: 3000
+      NODE_ENV: development
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src:ro
+      - ./apps/backend/tsconfig.json:/app/apps/backend/tsconfig.json:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -33,12 +37,16 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: apps/frontend/Dockerfile
+      dockerfile: apps/frontend/Dockerfile.dev
     restart: unless-stopped
     ports:
       - '${FRONTEND_PORT}:4000'
     environment:
       API_URL: ${API_URL}
       PORT: 4000
+      NODE_ENV: development
+    volumes:
+      - ./apps/frontend/public:/app/apps/frontend/public:ro
+      - ./apps/frontend/server.js:/app/apps/frontend/server.js:ro
     depends_on:
       - backend

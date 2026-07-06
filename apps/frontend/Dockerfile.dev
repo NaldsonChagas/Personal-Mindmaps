@@ -1,0 +1,8 @@
+FROM node:24-alpine
+WORKDIR /app
+RUN npm install -g pnpm
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/frontend/package.json ./apps/frontend/
+RUN pnpm install --frozen-lockfile --filter frontend --ignore-scripts
+EXPOSE 4000
+CMD ["node", "--watch", "apps/frontend/server.js"]

@@ -10,30 +10,47 @@
   <link rel="stylesheet" href="/css/tokens.css" />
   <link rel="stylesheet" href="/css/base.css" />
   <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+  <link rel="stylesheet" href="/node_modules/mind-elixir/dist/MindElixir.css" />
   <script src="https://unpkg.com/lucide@latest" defer></script>
 </head>
 <body>
-  <header class="page-header">
-    <div class="page-header-inner">
-      <a href="/" class="btn btn-ghost" aria-label="Back to list page">
+  <header class="editor-header">
+    <div class="editor-header-left">
+      <a href="/" class="btn btn-ghost btn-sm" aria-label="Back to list page">
         <i data-lucide="arrow-left"></i>
         Back
       </a>
-      <div class="logo" style="margin-left: var(--space-2);">
-        <img src="/assets/logo.svg" alt="" width="24" height="24" />
-        <h1>Personal MindMaps</h1>
+      <div class="logo" style="display:flex;align-items:center;gap:var(--space-2);">
+        <img src="/assets/logo.svg" alt="" width="20" height="20" />
       </div>
+    </div>
+
+    <div class="editor-header-center">
+      <span id="editor-title-display" class="editor-title-display" role="textbox" tabindex="0" aria-label="Mind map title">Loading...</span>
+      <input id="editor-title-input" class="editor-title hidden" type="text" maxlength="255" aria-label="Edit mind map title" />
+    </div>
+
+    <div class="editor-header-right">
+      <span id="save-badge" class="save-badge saved">Saved</span>
+      <button id="save-btn" class="btn btn-primary btn-sm" disabled aria-label="Save mind map">
+        <i data-lucide="save"></i>
+        Save
+      </button>
     </div>
   </header>
 
-  <main class="container">
-    <div id="map-content" class="empty-state" style="margin-top: var(--space-10);">
-      <i data-lucide="loader"></i>
-      <h3 id="map-title">Loading...</h3>
-      <p>The mind map editor will be implemented in the next phase.</p>
-    </div>
+  <main class="editor-page">
+    <section class="editor-topbar">
+      <span style="font-size:12px;color:var(--color-text-muted);">Click nodes to edit. Drag to rearrange.</span>
+    </section>
+
+    <section class="editor-shell">
+      <div id="mind-map-editor"></div>
+    </section>
   </main>
 
+  <script src="/node_modules/mind-elixir/dist/MindElixir.iife.js"></script>
   <script src="/config.js"></script>
   <script type="module" src="/js/map-page.js"></script>
 </body>
